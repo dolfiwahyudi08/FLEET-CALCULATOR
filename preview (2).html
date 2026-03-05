@@ -87,7 +87,7 @@ FLEET CALCULATOR AMM JOBSITE KPC-BGE
 <option value="COAL">Coal</option>
 </select>
 
-<label>Distance One Way (km)</label>
+<label>Distance (KM)</label>
 <input type="number" id="distance" value="2">
 
 <label>Jumlah Hauler Aktual</label>
@@ -100,7 +100,7 @@ FLEET CALCULATOR AMM JOBSITE KPC-BGE
 <label>Plan Productivity Loader</label>
 <select id="loaderProdSelect"></select>
 
-<label>Loading Time (menit)</label>
+<label>Loading Time (Menit)</label>
 <input type="number" id="loading" value="2">
 </div>
 
@@ -110,10 +110,10 @@ FLEET CALCULATOR AMM JOBSITE KPC-BGE
 <label>Plan Capacity Vessel Hauler</label>
 <select id="haulerCapSelect"></select>
 
-<label>Average Speed (km/jam)</label>
+<label>Speed (Km/jam)</label>
 <input type="number" id="speed" value="25">
 
-<label>Spotting + Dumping Time (menit)</label>
+<label>Spotting + Dumping Time (Menit)</label>
 <input type="number" id="dumping" value="1.5">
 </div>
 
@@ -152,8 +152,8 @@ if(material=="OB"){
 
 if(material=="COAL"){
     loaderSelect.innerHTML=`
-        <option value="193">PC200 (193 BCM/Jam)</option>
-        <option value="283">PC500 (283 BCM/Jam)</option>
+        <option value="193">PC200 (193 Ton/Jam)</option>
+        <option value="283">PC500 (283 Ton/Jam)</option>
     `;
     haulerSelect.innerHTML=`
         <option value="37">AROCS 4845K (37 TON)</option>
