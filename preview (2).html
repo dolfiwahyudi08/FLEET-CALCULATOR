@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fleet Calculator AMM</title>
+
+<style>
+body{
+    font-family: Arial, sans-serif;
+    background:#f4f6f9;
+    margin:0;
+    padding:15px;
+}
+.container{
+    max-width:500px;
+    margin:auto;
+    background:white;
+    padding:20px;
+    border-radius:12px;
+    box-shadow:0 4px 12px rgba(0,0,0,0.1);
+}
+.header{
+    text-align:center;
+    font-weight:bold;
+    font-size:18px;
+    margin-bottom:15px;
+}
+.section{
+    margin-top:15px;
+    padding:12px;
+    background:#f1f3f6;
+    border-radius:8px;
+}
+label{
+    font-weight:bold;
+    margin-top:8px;
+    display:block;
+}
+input, select{
+    width:100%;
+    padding:8px;
+    margin-top:4px;
+    border-radius:6px;
+    border:1px solid #ccc;
+}
+button{
+    width:100%;
+    padding:12px;
+    margin-top:20px;
+    border:none;
+    border-radius:8px;
+    background:#007bff;
+    color:white;
+    font-weight:bold;
+    font-size:16px;
+}
+.result{
+    margin-top:20px;
+    padding:15px;
+    background:#eef2f7;
+    border-radius:10px;
+}
+.under{color:red;font-weight:bold;}
+.ideal{color:green;font-weight:bold;}
+.over{color:orange;font-weight:bold;}
+.footer{
+    text-align:center;
+    margin-top:25px;
+    font-size:12px;
+    color:#777;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="header">
+FLEET CALCULATOR AMM JOBSITE KPC-BGE
+</div>
+
+<div class="section">
+<label>Material</label>
+<select id="material" onchange="updateOptions()">
+<option value="OB">Overburden</option>
+<option value="COAL">Coal</option>
+</select>
+
+<label>Distance One Way (km)</label>
+<input type="number" id="distance" value="2">
+
+<label>Jumlah Hauler Aktual</label>
+<input type="number" id="actualHauler" value="5">
+</div>
+
+<div class="section">
+<h4>Loader Parameter</h4>
+
+<label>Plan Productivity Loader</label>
+<select id="loaderProdSelect"></select>
+
+<label>Loading Time (menit)</label>
+<input type="number" id="loading" value="2">
+</div>
+
+<div class="section">
+<h4>Hauler Parameter</h4>
+
+<label>Plan Capacity Vessel Hauler</label>
+<select id="haulerCapSelect"></select>
+
+<label>Average Speed (km/jam)</label>
+<input type="number" id="speed" value="25">
+
+<label>Spotting + Dumping Time (menit)</label>
+<input type="number" id="dumping" value="1.5">
+</div>
+
+<button onclick="calculate()">Hitung Match Factor</button>
+
+<div class="result" id="output"></div>
+
+<div class="footer">
+DEVELOP BY COE
+</div>
+
+</div>
+
+<script>
+
+function updateOptions(){
+
+let material = document.getElementById("material").value;
+let loaderSelect = document.getElementById("loaderProdSelect");
+let haulerSelect = document.getElementById("haulerCapSelect");
+
+loaderSelect.innerHTML="";
+haulerSelect.innerHTML="";
+
+if(material=="OB"){
+    loaderSelect.innerHTML=`
+        <option value="100">PC200 (100 BCM/Jam)</option>
+        <option value="200">PC500 (200 BCM/Jam)</option>
+        <option value="470">PC1250 (470 BCM/Jam)</option>
+    `;
+    haulerSelect.innerHTML=`
+        <option value="43">HD785-7 (43 BCM)</option>
+        <option value="10">AROCS 4042K (10 BCM)</option>
+    `;
+}
+
+if(material=="COAL"){
+    loaderSelect.innerHTML=`
+        <option value="193">PC200 (193 BCM/Jam)</option>
+        <option value="283">PC500 (283 BCM/Jam)</option>
+    `;
+    haulerSelect.innerHTML=`
+        <option value="37">AROCS 4845K (37 TON)</option>
+    `;
+}
+
+}
+
+function calculate(){
+
+let distance = parseFloat(document.getElementById("distance").value);
+let actualHauler = parseFloat(document.getElementById("actualHauler").value);
+let loaderProd = parseFloat(document.getElementById("loaderProdSelect").value);
+let haulerCap = parseFloat(document.getElementById("haulerCapSelect").value);
+let speed = parseFloat(document.getElementById("speed").value);
+let loading = parseFloat(document.getElementById("loading").value);
+let dumping = parseFloat(document.getElementById("dumping").value);
+
+let cycleTime = ((distance*2)/speed*60) + loading + dumping;
+
+let recommended = (loaderProd*cycleTime)/(haulerCap*60);
+recommended = Math.ceil(recommended);
+
+let matchFactor = (actualHauler*haulerCap*60)/(loaderProd*cycleTime);
+
+let status="";
+let statusClass="";
+
+if(matchFactor < 0.9){
+    status="UNDER TRUCK";
+    statusClass="under";
+}
+else if(matchFactor >=0.9 && matchFactor <=1.1){
+    status="IDEAL MATCH";
+    statusClass="ideal";
+}
+else{
+    status="OVER TRUCK";
+    statusClass="over";
+}
+
+document.getElementById("output").innerHTML = `
+<p>Cycle Time : <b>${cycleTime.toFixed(2)} menit</b></p>
+<p>Rekomendasi Jumlah Hauler : <b>${recommended} Unit</b></p>
+<hr>
+<p>Match Factor Aktual : <b>${matchFactor.toFixed(2)}</b></p>
+<p>Status : <span class="${statusClass}">${status}</span></p>
+`;
+
+}
+
+updateOptions();
+
+</script>
+
+</body>
+</html>
